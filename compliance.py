@@ -13,5 +13,10 @@ client = CvpClient()
 
 client.connect([cvp1], cvp_user, cvp_pw)
 
-result = client.api.get_cvp_info()
-print(result)
+result = client.api.get_inventory()
+
+# for item in result:
+#     if item['complianceIndication'] != '':
+#         print(item['hostname'], 'is not compliant')
+
+
