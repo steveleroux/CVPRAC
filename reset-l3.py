@@ -20,6 +20,11 @@ for item in inventory:
     device = item['hostname']
     device_dict = client.api.get_device_by_name(device, search_by_hostname=True)
 
+
+
+    base = device+'-base'
+
+
     device_key = device_dict['key']
     device_configlets = client.api.get_configlets_by_device_id(device_key)
     for configlet in device_configlets:
@@ -30,3 +35,5 @@ for item in inventory:
         if ('ATD-INFRA' not in configlet_name) and (base not in configlet_name):
             print("Deleting", configlet_name)
             client.api.remove_configlets_from_device('Cleanup script', item, configlet_list_item, create_task=True)
+    print("Making sure", base, "is applied")
+    client.api.apply_configlets_to_device('Cleanup script', item, configlet, create_task=True, reorder_configlets=False)
