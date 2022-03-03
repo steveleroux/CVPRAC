@@ -28,26 +28,28 @@ for item in inventory:
     device_key = device_dict['key']
     device_configlets = client.api.get_configlets_by_device_id(device_key)
     for configlet in device_configlets:
-        print(configlet)
+        #print(configlet)
         configlet_name = configlet['name']
         configlet_list_item = [configlet]
         # print(configlet_list_item)
         base = device+'-base'
         if ('ATD-INFRA' not in configlet_name) and (base not in configlet_name):
-            print("Deleting", configlet_name)
+            print("Deleting", configlet_name, "from", device)
             client.api.remove_configlets_from_device('Cleanup script', item, configlet_list_item, create_task=True)
     #print("Making sure", configlet_list_item, "is applied")
     base_item = [base]
-    print(base)
+#    print(base)
+   
     client.api.apply_configlets_to_device('Cleanup script', item, base_configlet_list, create_task=True, reorder_configlets=False)
 
-
+print("Starting looping through containers")
 containers = client.api.get_containers()
 for container in containers['data']:
-    print("Container", container['name'])
+    #print("Container", container['name'])
     applied_configlets_to_container = client.api.get_configlets_by_container_id(container['key'])
     for applied_to_container in applied_configlets_to_container['configletList']:
-        print("Container", container['name'], "has container", applied_to_container, "applied,")
+        print("Container", container['name'], "has container", applied_to_container['name'], "applied,")
         if applied_to_container['name'] != 'ATD-INFRA':
             list_of = [applied_to_container]
             client.api.remove_configlets_from_container('Cleanup script', container, list_of, create_task=True)
+            print("Removing", applied_to_container['name'], "from", container['name'])
